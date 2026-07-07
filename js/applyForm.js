@@ -144,7 +144,7 @@ function makeSessionId() {
 
 let uid = 0;
 
-function createStepForm({ webhookUrl, onDone } = {}) {
+function createStepForm({ webhookUrl } = {}) {
   const formId = `apply-form-${uid++}`;
   const state = {
     step: 0,
@@ -344,32 +344,6 @@ function createStepForm({ webhookUrl, onDone } = {}) {
     body.append(text, retryBtn);
   }
 
-  function renderSuccess() {
-    state.submitted = true;
-    updateProgress();
-    body.innerHTML = "";
-
-    const check = document.createElement("div");
-    check.className = "apply-form-success-check";
-    check.innerHTML =
-      '<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
-
-    const heading = document.createElement("p");
-    heading.className = "apply-form-status-text";
-    heading.textContent = "You're in! We'll be in touch shortly.";
-
-    body.append(check, heading);
-
-    if (onDone) {
-      const closeBtn = document.createElement("button");
-      closeBtn.type = "button";
-      closeBtn.className = "btn btn-primary apply-form-next";
-      closeBtn.textContent = "Close";
-      closeBtn.addEventListener("click", onDone);
-      body.append(closeBtn);
-    }
-  }
-
   async function submit() {
     if (state.submitting) return;
     state.submitting = true;
@@ -384,7 +358,7 @@ function createStepForm({ webhookUrl, onDone } = {}) {
     try {
       await submitToGHL(webhookUrl, payload);
       state.submitting = false;
-      renderSuccess();
+      window.location.href = "thank-you.html";
     } catch (err) {
       state.submitting = false;
       console.error("Apply form submission failed:", err);
@@ -508,7 +482,7 @@ export function initApplyForm({ webhookUrl } = {}) {
     e.preventDefault();
 
     if (!modal) {
-      modalForm = createStepForm({ webhookUrl, onDone: () => modal.close() });
+      modalForm = createStepForm({ webhookUrl });
       modal = createModal(modalForm.el, { onClose: () => modalForm.captureAbandon() });
     } else {
       modalForm.reset();
