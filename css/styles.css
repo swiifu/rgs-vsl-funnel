@@ -39,11 +39,6 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  padding-bottom: calc(76px + env(safe-area-inset-bottom)); /* space for mobile sticky CTA */
-}
-
-@media (min-width: 768px) {
-  body { padding-bottom: 0; }
 }
 
 .container {
@@ -636,20 +631,6 @@ section { padding: 64px 0; }
 .back-link:hover { color: var(--fg); }
 
 /* =========================================================
-   MOBILE STICKY CTA
-========================================================= */
-.mobile-cta-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--bg-elevated);
-  border-top: 1px solid var(--border);
-  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-  z-index: 30;
-}
-
-/* =========================================================
    AMBIENT GLOW ACCENTS
    Soft blurred blobs echoing the hero aurora, scattered down
    the page so the deep purple/blue atmosphere carries through
@@ -698,8 +679,4 @@ section { padding: 64px 0; }
   top: 50%;
   left: -140px;
   transform: translateY(-50%);
-}
-
-@media (min-width: 768px) {
-  .mobile-cta-bar { display: none; }
 }

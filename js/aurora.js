@@ -102,7 +102,7 @@ void main() {
   height = (uv.y * 2.0 - height + 0.2);
   float intensity = 0.6 * height;
 
-  float midPoint = -0.42;
+  float midPoint = 0.20;
   float auroraAlpha = smoothstep(midPoint - uBlend * 0.5, midPoint + uBlend * 0.5, intensity);
 
   vec3 auroraColor = intensity * rampColor;
