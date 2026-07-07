@@ -17,7 +17,7 @@ const RGS_CONFIG = {
   // "Inbound Webhook" trigger and paste its URL here — the apply
   // form POSTs { full_name, phone, instagram, email } to it.
   ghl: {
-    webhookUrl: "YOUR_GHL_WEBHOOK_URL",
+    webhookUrl: "https://services.leadconnectorhq.com/hooks/q9PTNNtybqthHssYR77H/webhook-trigger/5f1df9e6-dc12-49ce-8b68-f6d9896b798d",
   },
 
   // YouTube testimonials. Each uses the video's default thumbnail
@@ -45,6 +45,7 @@ function renderMainVideo() {
       title="Main VSL"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen></iframe>`;
+    initVideoScrollShield(el);
   } else if (provider === "wistia") {
     el.innerHTML = `<wistia-player media-id="${id}"></wistia-player>`;
     if (!document.querySelector('script[src="https://fast.wistia.com/player.js"]')) {
@@ -60,6 +61,72 @@ function renderMainVideo() {
       allowfullscreen
       loading="lazy"></iframe>`;
   }
+}
+
+/* =========================================================
+   VIDEO SCROLL SHIELD
+   The main video is a cross-origin YouTube iframe, so any scroll
+   gesture (wheel or touch drag) that starts over it never reaches
+   the page -- the iframe's own document swallows it. That's a big,
+   above-the-fold target, so it's often exactly where a visitor's
+   cursor/finger is when they first try to scroll. This overlay
+   forwards scroll gestures to the page while still letting a plain
+   tap/click fall through to the iframe (so tapping to unmute still
+   works).
+========================================================= */
+function initVideoScrollShield(wrapper) {
+  const shield = document.createElement("div");
+  shield.className = "video-scroll-shield";
+  wrapper.appendChild(shield);
+
+  function letClickThrough() {
+    shield.style.pointerEvents = "none";
+    setTimeout(() => {
+      shield.style.pointerEvents = "";
+    }, 350);
+  }
+
+  shield.addEventListener(
+    "wheel",
+    (e) => {
+      e.preventDefault();
+      window.scrollBy({ top: e.deltaY, left: e.deltaX, behavior: "auto" });
+    },
+    { passive: false }
+  );
+
+  shield.addEventListener("mousedown", letClickThrough);
+
+  let touchStartY = 0;
+  let isDragging = false;
+
+  shield.addEventListener(
+    "touchstart",
+    (e) => {
+      touchStartY = e.touches[0].clientY;
+      isDragging = false;
+    },
+    { passive: true }
+  );
+
+  shield.addEventListener(
+    "touchmove",
+    (e) => {
+      const currentY = e.touches[0].clientY;
+      const delta = touchStartY - currentY;
+      if (isDragging || Math.abs(delta) > 8) {
+        isDragging = true;
+        e.preventDefault();
+        window.scrollBy({ top: delta, behavior: "auto" });
+        touchStartY = currentY;
+      }
+    },
+    { passive: false }
+  );
+
+  shield.addEventListener("touchend", () => {
+    if (!isDragging) letClickThrough();
+  });
 }
 
 /* =========================================================

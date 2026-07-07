@@ -33,7 +33,6 @@ const FIELDS = [
     key: "phone",
     label: "What's the best phone number to reach you?",
     type: "tel",
-    placeholder: "(555) 123-4567",
     autocomplete: "tel",
     validate: (v) =>
       /^[0-9+\-\s().]{7,20}$/.test(v.trim()) ? null : "Please enter a valid phone number.",
@@ -112,7 +111,6 @@ async function submitToGHL(webhookUrl, payload) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
-    keepalive: true,
   });
 
   if (!res.ok) {
@@ -120,21 +118,23 @@ async function submitToGHL(webhookUrl, payload) {
   }
 }
 
-/** Best-effort partial-lead capture — never blocks or surfaces errors to the user. */
+/**
+ * Best-effort partial-lead capture — never blocks or surfaces errors to the
+ * user. Deliberately plain fetch, no `keepalive`/`sendBeacon`: both force
+ * the request's credentials mode to "include", which GHL's webhook (it
+ * responds with a wildcard Access-Control-Allow-Origin: *) rejects outright.
+ * Trade-off: on a hard tab-close mid-request this can get cut short, but
+ * that's rare next to the common cases (modal close, step advance) where
+ * the page stays alive long enough for a plain fetch to complete.
+ */
 function sendPartial(webhookUrl, payload) {
   if (!isConfigured(webhookUrl)) return;
 
-  if (navigator.sendBeacon) {
-    const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
-    navigator.sendBeacon(webhookUrl, blob);
-  } else {
-    fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      keepalive: true,
-    }).catch(() => {});
-  }
+  fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).catch(() => {});
 }
 
 function makeSessionId() {
@@ -261,7 +261,7 @@ function createStepForm({ webhookUrl, onDone } = {}) {
       if (msg) {
         error.textContent = msg;
         input.classList.add("has-error");
-        input.focus();
+        input.focus({ preventScroll: true });
         return;
       }
       error.textContent = "";
@@ -307,14 +307,14 @@ function createStepForm({ webhookUrl, onDone } = {}) {
         initialCountry: "",
         initialCountryLookup: detectCountry,
         loadUtils: () => import("intl-tel-input/utils"),
-        separateDialCode: true,
+        separateDialCode: false,
         containerClass: "apply-form-tel",
       });
     }
 
     requestAnimationFrame(() => {
       body.classList.add("is-entering");
-      input.focus();
+      input.focus({ preventScroll: true });
     });
   }
 
