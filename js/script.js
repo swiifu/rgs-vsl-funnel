@@ -1,4 +1,5 @@
 import { mountAurora } from "./aurora.js";
+import { initApplyForm } from "./applyForm.js";
 
 /* =========================================================
    RGS VSL TEMPLATE - CONFIG
@@ -12,8 +13,12 @@ const RGS_CONFIG = {
     id: "7iUeDIn3s8w", // YouTube video ID, Wistia media ID, or Loom share ID
   },
 
-  // Typeform application form id (the part after typeform.com/to/)
-  typeformId: "YOUR_TYPEFORM_ID",
+  // GoHighLevel inbound webhook. Create a Workflow in GHL with an
+  // "Inbound Webhook" trigger and paste its URL here — the apply
+  // form POSTs { full_name, phone, instagram, email } to it.
+  ghl: {
+    webhookUrl: "YOUR_GHL_WEBHOOK_URL",
+  },
 
   // YouTube testimonials. Each uses the video's default thumbnail
   // and swaps to a live embed on click (click-to-play for performance).
@@ -94,16 +99,6 @@ function renderTestimonials() {
 }
 
 /* =========================================================
-   TYPEFORM ID INJECTION
-   Keeps the form id in one place (RGS_CONFIG) instead of
-   duplicating it inside index.html.
-========================================================= */
-function renderTypeform() {
-  const el = document.querySelector("[data-tf-live]");
-  if (el) el.setAttribute("data-tf-live", RGS_CONFIG.typeformId);
-}
-
-/* =========================================================
    AURORA BACKGROUND (hero section)
 ========================================================= */
 function initAurora() {
@@ -159,8 +154,8 @@ function fixHashScroll() {
 document.addEventListener("DOMContentLoaded", () => {
   renderMainVideo();
   renderTestimonials();
-  renderTypeform();
   initFaq();
   initAurora();
+  initApplyForm({ webhookUrl: RGS_CONFIG.ghl.webhookUrl });
   fixHashScroll();
 });

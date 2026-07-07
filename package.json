@@ -11,6 +11,7 @@
     "vite": "^5.4.10"
   },
   "dependencies": {
+    "intl-tel-input": "^29.1.2",
     "ogl": "^1.0.11"
   }
 }
