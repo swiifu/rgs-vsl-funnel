@@ -960,6 +960,13 @@ body.video-modal-open { overflow: hidden; }
   transition: transform 0.25s ease;
 }
 
+@media (min-width: 900px) {
+  .video-modal-dialog {
+    max-width: 960px;
+    padding: 36px;
+  }
+}
+
 .video-modal-overlay.is-open .video-modal-dialog {
   transform: translateY(0);
 }
