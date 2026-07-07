@@ -47,11 +47,10 @@ function renderMainVideo() {
 
   if (provider === "youtube") {
     el.innerHTML = `<iframe
-      src="https://www.youtube.com/embed/${id}"
+      src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&playsinline=1"
       title="Main VSL"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-      loading="lazy"></iframe>`;
+      allowfullscreen></iframe>`;
   } else if (provider === "wistia") {
     el.innerHTML = `<wistia-player media-id="${id}"></wistia-player>`;
     if (!document.querySelector('script[src="https://fast.wistia.com/player.js"]')) {
