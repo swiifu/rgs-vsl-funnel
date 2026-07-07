@@ -140,10 +140,27 @@ function initFaq() {
   });
 }
 
+/* =========================================================
+   HASH SCROLL CORRECTION
+   Dynamically injected content (video, testimonials) changes
+   page height after the browser's initial scroll-to-hash, so a
+   direct link to e.g. #apply can land short. Re-scroll once
+   everything has settled.
+========================================================= */
+function fixHashScroll() {
+  if (!location.hash) return;
+  const target = document.querySelector(location.hash);
+  if (!target) return;
+
+  requestAnimationFrame(() => target.scrollIntoView());
+  window.addEventListener("load", () => target.scrollIntoView(), { once: true });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   renderMainVideo();
   renderTestimonials();
   renderTypeform();
   initFaq();
   initAurora();
+  fixHashScroll();
 });
