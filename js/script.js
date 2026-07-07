@@ -90,7 +90,11 @@ function initVideoScrollShield(wrapper) {
     "wheel",
     (e) => {
       e.preventDefault();
-      window.scrollBy({ top: e.deltaY, left: e.deltaX, behavior: "auto" });
+      // A physical mouse wheel typically reports deltaMode 1 (lines) or
+      // 2 (pages), not 0 (pixels) -- treating that raw number as pixels
+      // makes scrolling over the shield feel almost frozen on desktop.
+      const factor = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1;
+      window.scrollBy({ top: e.deltaY * factor, left: e.deltaX * factor, behavior: "auto" });
     },
     { passive: false }
   );
