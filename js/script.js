@@ -162,13 +162,73 @@ function renderTestimonials() {
 
   grid.querySelectorAll(".testimonial-video").forEach((card) => {
     card.addEventListener("click", () => {
-      const youtubeId = card.getAttribute("data-youtube-id");
-      card.innerHTML = `<iframe
-        src="https://www.youtube.com/embed/${youtubeId}?autoplay=1"
-        title="Testimonial video"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen></iframe>`;
+      openTestimonialModal(card.getAttribute("data-youtube-id"));
     });
+  });
+}
+
+/* =========================================================
+   TESTIMONIAL VIDEO MODAL
+   Clicking a student win opens the video centered in a modal,
+   followed by a nudge into the apply flow.
+========================================================= */
+function openTestimonialModal(youtubeId) {
+  const overlay = document.createElement("div");
+  overlay.className = "video-modal-overlay";
+
+  const dialog = document.createElement("div");
+  dialog.className = "video-modal-dialog";
+
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.className = "apply-modal-close";
+  closeBtn.innerHTML = "&times;";
+  closeBtn.setAttribute("aria-label", "Close");
+
+  const player = document.createElement("div");
+  player.className = "video-modal-player";
+  player.innerHTML = `<iframe
+    src="https://www.youtube.com/embed/${youtubeId}?autoplay=1"
+    title="Testimonial video"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen></iframe>`;
+
+  const question = document.createElement("p");
+  question.className = "video-modal-question";
+  question.textContent = "Does their story relate to you?";
+
+  const cta = document.createElement("a");
+  cta.href = "#apply";
+  cta.className = "btn btn-primary btn-lg btn-shiny";
+  cta.innerHTML = "<span>Request My Free Consultation</span>";
+
+  dialog.append(closeBtn, player, question, cta);
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+
+  function close() {
+    overlay.classList.remove("is-open");
+    document.body.classList.remove("video-modal-open");
+    document.removeEventListener("keydown", onKeydown);
+    setTimeout(() => overlay.remove(), 200);
+  }
+
+  function onKeydown(e) {
+    if (e.key === "Escape") close();
+  }
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
+  });
+  closeBtn.addEventListener("click", close);
+  // The apply modal opens via applyForm.js's own delegated a[href="#apply"]
+  // listener -- this just dismisses the video modal out of the way.
+  cta.addEventListener("click", close);
+  document.addEventListener("keydown", onKeydown);
+
+  requestAnimationFrame(() => {
+    overlay.classList.add("is-open");
+    document.body.classList.add("video-modal-open");
   });
 }
 
@@ -191,18 +251,35 @@ function initAurora() {
    FAQ ACCORDION
 ========================================================= */
 function initFaq() {
-  document.querySelectorAll(".faq-question").forEach((btn) => {
+  document.querySelectorAll(".faq-item").forEach((item) => {
+    const btn = item.querySelector(".faq-question");
+    const answer = item.querySelector(".faq-answer");
+
     btn.addEventListener("click", () => {
-      const answer = btn.nextElementSibling;
       const isOpen = btn.getAttribute("aria-expanded") === "true";
 
-      document.querySelectorAll(".faq-question").forEach((other) => {
-        other.setAttribute("aria-expanded", "false");
-        other.nextElementSibling.style.maxHeight = null;
+      document.querySelectorAll(".faq-item").forEach((otherItem) => {
+        otherItem.querySelector(".faq-question").setAttribute("aria-expanded", "false");
+        const otherAnswer = otherItem.querySelector(".faq-answer");
+        otherAnswer.style.maxHeight = null;
+        otherAnswer.querySelector(".faq-video")?.remove();
       });
 
       if (!isOpen) {
         btn.setAttribute("aria-expanded", "true");
+
+        const youtubeId = item.dataset.youtubeId;
+        if (youtubeId) {
+          const video = document.createElement("div");
+          video.className = "faq-video";
+          video.innerHTML = `<iframe
+            src="https://www.youtube.com/embed/${youtubeId}?autoplay=1"
+            title="FAQ answer video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>`;
+          answer.prepend(video);
+        }
+
         answer.style.maxHeight = answer.scrollHeight + "px";
       }
     });

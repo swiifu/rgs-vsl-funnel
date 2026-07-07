@@ -495,23 +495,24 @@ export function initApplyForm({ webhookUrl } = {}) {
     inlineMount.appendChild(inlineForm.el);
   }
 
-  const triggers = document.querySelectorAll('a[href="#apply"]');
-  if (!triggers.length) return;
-
   let modal = null;
   let modalForm = null;
 
-  triggers.forEach((trigger) => {
-    trigger.addEventListener("click", (e) => {
-      e.preventDefault();
+  // Delegated so it also catches a[href="#apply"] elements created later
+  // (e.g. the CTA inside the testimonial video modal), not just the ones
+  // present when this ran.
+  document.addEventListener("click", (e) => {
+    const trigger = e.target.closest('a[href="#apply"]');
+    if (!trigger) return;
 
-      if (!modal) {
-        modalForm = createStepForm({ webhookUrl, onDone: () => modal.close() });
-        modal = createModal(modalForm.el, { onClose: () => modalForm.captureAbandon() });
-      } else {
-        modalForm.reset();
-      }
-      modal.open();
-    });
+    e.preventDefault();
+
+    if (!modal) {
+      modalForm = createStepForm({ webhookUrl, onDone: () => modal.close() });
+      modal = createModal(modalForm.el, { onClose: () => modalForm.captureAbandon() });
+    } else {
+      modalForm.reset();
+    }
+    modal.open();
   });
 }

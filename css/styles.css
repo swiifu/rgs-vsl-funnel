@@ -660,6 +660,24 @@ section { padding: 64px 0; }
   margin: 0 0 20px;
 }
 
+.faq-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.faq-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 /* =========================================================
    APPLY / STEP FORM
 ========================================================= */
@@ -901,6 +919,74 @@ body.apply-modal-open { overflow: hidden; }
   padding: 8px;
 }
 .apply-modal-close:hover { color: var(--fg); }
+
+/* =========================================================
+   TESTIMONIAL VIDEO MODAL
+========================================================= */
+.video-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 5, 12, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.video-modal-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.video-modal-open { overflow: hidden; }
+
+.video-modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  text-align: center;
+  transform: translateY(12px);
+  transition: transform 0.25s ease;
+}
+
+.video-modal-overlay.is-open .video-modal-dialog {
+  transform: translateY(0);
+}
+
+.video-modal-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #000;
+}
+
+.video-modal-player iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-modal-question {
+  margin: 24px 0 16px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--fg);
+}
 
 /* =========================================================
    FOOTER
