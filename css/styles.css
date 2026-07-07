@@ -499,10 +499,20 @@ section { padding: 64px 0; }
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
+  /* Reserves roughly the final rendered height (4 items, 16:9 each)
+     before JS populates this container, so the page doesn't grow
+     substantially right after load -- that shift is what made a
+     visitor's first scroll gesture land while there was still
+     nothing to scroll to. Assumes 4 testimonials; revisit the row
+     counts below if RGS_CONFIG.testimonials' length changes. */
+  min-height: calc((100vw - 40px) * 2.25 + 72px);
 }
 
 @media (min-width: 640px) {
-  .testimonial-grid { grid-template-columns: repeat(2, 1fr); }
+  .testimonial-grid {
+    grid-template-columns: repeat(2, 1fr);
+    min-height: calc((min(100vw, 1120px) - 64px) * 0.5625 + 24px);
+  }
 }
 
 .testimonial-item {
@@ -651,6 +661,11 @@ section { padding: 64px 0; }
 .apply-form-wrapper {
   max-width: 560px;
   margin: 0 auto;
+  /* Matches .apply-form's own min-height -- this wrapper is empty
+     until JS mounts the form inside it, so without this the page
+     grows right after load instead of having the space reserved
+     from the first paint. */
+  min-height: 320px;
 }
 
 .apply-form {
