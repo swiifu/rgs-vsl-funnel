@@ -27,7 +27,12 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  /* `overflow-x: hidden` forces the used value of overflow-y to "auto"
+     too (per spec), even when overflow-y is explicitly "visible" --
+     that makes both html and body independent scroll containers at
+     once. `clip` avoids the pairing rule entirely since it never
+     establishes a scroll container. */
+  overflow-x: clip;
 }
 
 body {
@@ -37,7 +42,7 @@ body {
   color: var(--fg);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .container {
