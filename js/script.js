@@ -126,7 +126,7 @@ function initAurora() {
     colorStops: ["#7c3aed", "#3b82f6", "#7c3aed"],
     amplitude: 1.0,
     blend: 0.6,
-    speed: 2.0,
+    speed: 0.6,
   });
 }
 
