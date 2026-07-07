@@ -496,9 +496,6 @@ section { padding: 64px 0; }
 @media (min-width: 640px) {
   .testimonial-grid { grid-template-columns: repeat(2, 1fr); }
 }
-@media (min-width: 1024px) {
-  .testimonial-grid { grid-template-columns: repeat(3, 1fr); }
-}
 
 .testimonial-item {
   background: var(--bg-elevated-2);

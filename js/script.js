@@ -18,21 +18,10 @@ const RGS_CONFIG = {
   // YouTube testimonials. Each uses the video's default thumbnail
   // and swaps to a live embed on click (click-to-play for performance).
   testimonials: [
-    {
-      youtubeId: "YOUTUBE_ID_1",
-      name: "Student Name",
-      result: "Landed a remote closer role: $6,400 first month",
-    },
-    {
-      youtubeId: "YOUTUBE_ID_2",
-      name: "Student Name",
-      result: "Replaced their 9-5 income in 45 days",
-    },
-    {
-      youtubeId: "YOUTUBE_ID_3",
-      name: "Student Name",
-      result: "First remote sales role, $8,100/month",
-    },
+    { youtubeId: "5PRFp_ywZp4", name: "Student testimonial" },
+    { youtubeId: "sVLkxe1_eyw", name: "Student testimonial" },
+    { youtubeId: "lmpwUnWWEoU", name: "Student testimonial" },
+    { youtubeId: "iQl5EhKff48", name: "Student testimonial" },
   ],
 };
 
