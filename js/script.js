@@ -9,7 +9,7 @@ const RGS_CONFIG = {
   // Main VSL video. provider: "youtube" | "wistia" | "loom"
   video: {
     provider: "youtube",
-    id: "YOUR_YOUTUBE_VIDEO_ID", // YouTube video ID, Wistia media ID, or Loom share ID
+    id: "7iUeDIn3s8w", // YouTube video ID, Wistia media ID, or Loom share ID
   },
 
   // Typeform application form id (the part after typeform.com/to/)
