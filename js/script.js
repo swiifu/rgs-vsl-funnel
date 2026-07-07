@@ -23,10 +23,13 @@ const RGS_CONFIG = {
   // YouTube testimonials. Each uses the video's default thumbnail
   // and swaps to a live embed on click (click-to-play for performance).
   testimonials: [
-    { youtubeId: "5PRFp_ywZp4", name: "Student testimonial" },
+    { youtubeId: "LgdC6Qi-aYI", name: "Student testimonial" },
+    { youtubeId: "n1W73s-V-oM", name: "Student testimonial" },
+    { youtubeId: "C2agOx3Fgsk", name: "Student testimonial" },
     { youtubeId: "sVLkxe1_eyw", name: "Student testimonial" },
     { youtubeId: "lmpwUnWWEoU", name: "Student testimonial" },
-    { youtubeId: "iQl5EhKff48", name: "Student testimonial" },
+    { youtubeId: "2mdx_5Jp51o", name: "Student testimonial" },
+    { youtubeId: "lmpwUnWWEoU", name: "Student testimonial" },
   ],
 };
 
