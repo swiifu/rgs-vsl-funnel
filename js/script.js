@@ -1,6 +1,7 @@
 import { mountAurora } from "./aurora.js";
 import { initApplyForm } from "./applyForm.js";
 import { initVideoScrollShield } from "./videoScrollShield.js";
+import { createYouTubePlayer } from "./youtubePlayer.js";
 
 /* =========================================================
    RGS VSL TEMPLATE - CONFIG
@@ -44,11 +45,12 @@ function renderMainVideo() {
 
   if (provider === "youtube") {
     el.innerHTML = `<iframe
-      src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&playsinline=1"
+      id="vsl-iframe"
+      src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}"
       title="Main VSL"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen></iframe>`;
-    initVideoScrollShield(el);
+    initVideoScrollShield(el, createYouTubePlayer("vsl-iframe"));
   } else if (provider === "wistia") {
     el.innerHTML = `<wistia-player media-id="${id}"></wistia-player>`;
     if (!document.querySelector('script[src="https://fast.wistia.com/player.js"]')) {

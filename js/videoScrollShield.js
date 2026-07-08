@@ -5,16 +5,40 @@
    handles the event, and it never reaches the outer page at all.
    For an above-the-fold video, that's often exactly where a
    visitor's cursor/finger is when they first try to scroll. This
-   overlay forwards scroll gestures to the page while still letting
-   a plain tap/click fall through to the iframe (so tapping to
-   unmute still works).
+   overlay forwards scroll gestures to the page.
+
+   A plain tap is meant to fall through to the iframe (so tapping to
+   play/unmute still works), but on touch devices the browser often
+   locks the resulting synthetic "click" to whatever received the
+   original touchstart -- which is this shield, not the iframe --
+   even after we make the shield pointer-events:none. That's why it
+   could take two taps to register. So instead of only relying on
+   the fall-through, a tap also drives play/unmute directly through
+   the YouTube IFrame Player API (see youtubePlayer.js), which works
+   on the very first tap.
 ========================================================= */
-export function initVideoScrollShield(wrapper) {
+export function initVideoScrollShield(wrapper, playerPromise) {
   const shield = document.createElement("div");
   shield.className = "video-scroll-shield";
   wrapper.appendChild(shield);
 
+  let player = null;
+  if (playerPromise) {
+    playerPromise.then((p) => { player = p; }).catch(() => {});
+  }
+
+  function activateVideo() {
+    if (!player) return;
+    try {
+      if (typeof player.unMute === "function") player.unMute();
+      if (typeof player.playVideo === "function") player.playVideo();
+    } catch (err) {
+      // Player may not be fully initialized yet -- safe to ignore.
+    }
+  }
+
   function letClickThrough() {
+    activateVideo();
     shield.style.pointerEvents = "none";
     setTimeout(() => {
       shield.style.pointerEvents = "";

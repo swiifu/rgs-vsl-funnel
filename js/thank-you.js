@@ -1,5 +1,6 @@
 import { mountAurora } from "./aurora.js";
 import { initVideoScrollShield } from "./videoScrollShield.js";
+import { createYouTubePlayer } from "./youtubePlayer.js";
 
 function renderVideo() {
   const el = document.getElementById("thank-you-player");
@@ -7,11 +8,12 @@ function renderVideo() {
 
   const id = el.dataset.mediaId;
   el.innerHTML = `<iframe
-    src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&playsinline=1"
+    id="thank-you-iframe"
+    src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}"
     title="Watch before your call"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen></iframe>`;
-  initVideoScrollShield(el);
+  initVideoScrollShield(el, createYouTubePlayer("thank-you-iframe"));
 }
 
 function initAurora() {
