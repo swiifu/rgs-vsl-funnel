@@ -20,6 +20,8 @@
 import intlTelInput from "intl-tel-input";
 import "intl-tel-input/styles";
 
+import { track, trackCustom } from "./pixel.js";
+
 const FIELDS = [
   {
     key: "fullName",
@@ -268,6 +270,12 @@ function createStepForm({ webhookUrl } = {}) {
       input.classList.remove("has-error");
       state.values[field.key] = value;
 
+      trackCustom("ApplyStepCompleted", {
+        step: state.step + 1,
+        field: field.key,
+        total_steps: FIELDS.length,
+      });
+
       if (state.step < FIELDS.length - 1) {
         sendPartial(
           webhookUrl,
@@ -358,6 +366,9 @@ function createStepForm({ webhookUrl } = {}) {
     try {
       await submitToGHL(webhookUrl, payload);
       state.submitting = false;
+      // Lead (the ad-optimizable conversion) fires on thank-you.html, where
+      // it can't be cut off by this navigation.
+      trackCustom("ApplySubmitted");
       window.location.href = "thank-you.html";
     } catch (err) {
       state.submitting = false;
@@ -467,6 +478,13 @@ export function initApplyForm({ webhookUrl } = {}) {
   if (inlineMount) {
     const inlineForm = createStepForm({ webhookUrl });
     inlineMount.appendChild(inlineForm.el);
+    // Someone can start the inline form without ever clicking a CTA, so
+    // count the first focus into it as application intent too.
+    inlineForm.el.addEventListener(
+      "focusin",
+      () => track("InitiateCheckout", { content_name: "apply_form", source: "inline" }),
+      { once: true }
+    );
   }
 
   let modal = null;
@@ -480,6 +498,7 @@ export function initApplyForm({ webhookUrl } = {}) {
     if (!trigger) return;
 
     e.preventDefault();
+    track("InitiateCheckout", { content_name: "apply_form", source: "cta" });
 
     if (!modal) {
       modalForm = createStepForm({ webhookUrl });

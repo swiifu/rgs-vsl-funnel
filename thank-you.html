@@ -9,8 +9,33 @@
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="assets/RGS_NOBG.svg">
 <link rel="stylesheet" href="css/styles.css">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '955976087094941');
+fbq('track', 'PageView');
+// Lead = completed application. Session-guarded so a refresh of the
+// thank-you page doesn't double-count the conversion.
+try {
+  if (!sessionStorage.getItem('rgs_px_lead')) {
+    sessionStorage.setItem('rgs_px_lead', '1');
+    fbq('track', 'Lead');
+  }
+} catch (_) { fbq('track', 'Lead'); }
+</script>
+<!-- End Meta Pixel Code -->
 </head>
 <body class="thank-you-page">
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=955976087094941&ev=PageView&noscript=1"
+/></noscript>
 
 <div class="aurora-bg" id="aurora-bg" aria-hidden="true"></div>
 

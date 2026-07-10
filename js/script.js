@@ -1,5 +1,6 @@
 import { mountAurora } from "./aurora.js";
 import { initApplyForm } from "./applyForm.js";
+import { trackCustom, trackFirstInteraction } from "./pixel.js";
 import { initVideoScrollShield } from "./videoScrollShield.js";
 import { createYouTubePlayer } from "./youtubePlayer.js";
 
@@ -66,6 +67,8 @@ function renderMainVideo() {
       allowfullscreen
       loading="lazy"></iframe>`;
   }
+
+  trackFirstInteraction(el, "VSLEngaged", { video_id: id });
 }
 
 /* =========================================================
@@ -94,7 +97,9 @@ function renderTestimonials() {
 
   grid.querySelectorAll(".testimonial-video").forEach((card) => {
     card.addEventListener("click", () => {
-      openTestimonialModal(card.getAttribute("data-youtube-id"));
+      const youtubeId = card.getAttribute("data-youtube-id");
+      trackCustom("TestimonialPlay", { video_id: youtubeId });
+      openTestimonialModal(youtubeId);
     });
   });
 }
@@ -199,6 +204,7 @@ function initFaq() {
 
       if (!isOpen) {
         btn.setAttribute("aria-expanded", "true");
+        trackCustom("FAQOpen", { question: btn.textContent.replace(/\+\s*$/, "").trim() });
 
         const youtubeId = item.dataset.youtubeId;
         if (youtubeId) {

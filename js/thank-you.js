@@ -1,4 +1,5 @@
 import { mountAurora } from "./aurora.js";
+import { trackFirstInteraction } from "./pixel.js";
 import { initVideoScrollShield } from "./videoScrollShield.js";
 import { createYouTubePlayer } from "./youtubePlayer.js";
 
@@ -7,6 +8,7 @@ function renderVideo() {
   if (!el) return;
 
   const id = el.dataset.mediaId;
+  trackFirstInteraction(el, "ThankYouVideoEngaged", { video_id: id });
   el.innerHTML = `<iframe
     id="thank-you-iframe"
     src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}"
