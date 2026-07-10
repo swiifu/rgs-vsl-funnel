@@ -1,3 +1,4 @@
+import { captureAttribution } from "./attribution.js";
 import { mountAurora } from "./aurora.js";
 import { trackFirstInteraction } from "./pixel.js";
 import { initVideoScrollShield } from "./videoScrollShield.js";
@@ -34,6 +35,7 @@ function initAurora() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  captureAttribution();
   renderVideo();
   initAurora();
 });

@@ -1,3 +1,4 @@
+import { captureAttribution } from "./attribution.js";
 import { mountAurora } from "./aurora.js";
 import { initApplyForm } from "./applyForm.js";
 import { trackCustom, trackFirstInteraction } from "./pixel.js";
@@ -241,6 +242,7 @@ function fixHashScroll() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  captureAttribution();
   renderMainVideo();
   renderTestimonials();
   initFaq();

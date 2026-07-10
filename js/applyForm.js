@@ -20,6 +20,7 @@
 import intlTelInput from "intl-tel-input";
 import "intl-tel-input/styles";
 
+import { attributionQueryString, getAttribution, getMetaBrowserIds } from "./attribution.js";
 import { track, trackCustom } from "./pixel.js";
 
 const FIELDS = [
@@ -91,6 +92,8 @@ function isConfigured(webhookUrl) {
 }
 
 function buildPayload(values, { status, lastStepCompleted, sessionId }) {
+  const attribution = getAttribution();
+  const metaIds = getMetaBrowserIds();
   return {
     session_id: sessionId,
     form_status: status, // "partial" | "complete"
@@ -101,6 +104,18 @@ function buildPayload(values, { status, lastStepCompleted, sessionId }) {
     email: (values.email || "").trim(),
     source: "website_apply_form",
     submitted_at: new Date().toISOString(),
+    // Ad attribution (captured off the landing URL by attribution.js) so the
+    // GHL contact record shows which ad / source produced the lead.
+    utm_source: attribution.utm_source || "",
+    utm_medium: attribution.utm_medium || "",
+    utm_campaign: attribution.utm_campaign || "",
+    utm_content: attribution.utm_content || "",
+    utm_term: attribution.utm_term || "",
+    fbclid: attribution.fbclid || "",
+    landing_page: attribution.landing_page || "",
+    // Meta browser IDs for server-side Conversions API matching from GHL.
+    fbp: metaIds.fbp,
+    fbc: metaIds.fbc,
   };
 }
 
@@ -369,7 +384,10 @@ function createStepForm({ webhookUrl } = {}) {
       // Lead (the ad-optimizable conversion) fires on thank-you.html, where
       // it can't be cut off by this navigation.
       trackCustom("ApplySubmitted");
-      window.location.href = "thank-you.html";
+      // Carry utm_*/fbclid onto the thank-you URL so Events Manager
+      // custom conversions can match on them there too.
+      const qs = attributionQueryString();
+      window.location.href = "thank-you.html" + (qs ? `?${qs}` : "");
     } catch (err) {
       state.submitting = false;
       console.error("Apply form submission failed:", err);
