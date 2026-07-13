@@ -21,7 +21,7 @@ import intlTelInput from "intl-tel-input";
 import "intl-tel-input/styles";
 
 import { attributionQueryString, getAttribution, getMetaBrowserIds } from "./attribution.js";
-import { track, trackCustom, trackOncePerSession } from "./pixel.js";
+import { track, trackCustom } from "./pixel.js";
 
 const FIELDS = [
   {
@@ -381,11 +381,9 @@ function createStepForm({ webhookUrl } = {}) {
     try {
       await submitToGHL(webhookUrl, payload);
       state.submitting = false;
+      // Lead (the ad-optimizable conversion) fires on thank-you.html's inline
+      // pixel, where it can't be cut off by the navigation below.
       trackCustom("ApplySubmitted");
-      // Lead is the ad-optimizable conversion. Fire once per session so a
-      // back-navigation + resubmit can't double-count. fbevents.js uses
-      // sendBeacon, so it survives the navigation on the next line.
-      trackOncePerSession("apply_lead", "Lead", { content_name: "apply_form" });
       // Carry utm_*/fbclid onto the thank-you URL so Events Manager
       // custom conversions can match on them there too.
       const qs = attributionQueryString();
